@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="madura-dbloader-sample" default="load" basedir="../" xmlns:ivy="antlib:org.apache.ivy.ant">
+
+	<!--
+	Make sure you create the following file. It should look like:
+	scripts.dir=/your/scripts/directory
+	jdbc.url=jdbc:oracle:thin:@localhost:1521:XE (mine is a local copy of oracle XE)
+	jdbc.driver=oracle.jdbc.driver.OracleDriver
+	system.password=secret
+	-->
+	<property file="local_build.properties"/>
+	
+	<target name="load">
+		<taskdef name="dbloader" classname="salestech.tsom.db.RunDatabaseScripts">
+		  <classpath>
+		  	<fileset dir="${basedir}/lib" includes="*.jar" />
+		  </classpath>
+		</taskdef>
+		<dbloader 
+			dir="${scripts.dir}" 
+			driver="${jdbc.driver}" 
+			drop="true" 
+			debug="false" 
+			jdbcURL="${jdbc.url}" 
+			systemPassword="${system.password}"/>
+	</target>
+    
+</project>
