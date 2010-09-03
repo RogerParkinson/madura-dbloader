@@ -11,7 +11,7 @@
 	<property file="local_build.properties"/>
 	
 	<target name="load">
-		<taskdef name="dbloader" classname="salestech.tsom.db.RunDatabaseScripts">
+		<taskdef name="dbloader" classname="nz.co.senanque.dbloader.RunDatabaseScripts">
 		  <classpath>
 		  	<fileset dir="${basedir}/lib" includes="*.jar" />
 		  </classpath>
