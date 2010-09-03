@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-stylesheet type="text/xsl" href="MaduraHTML.xsl"?>
+<doc xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xi="http://www.w3.org/2001/XInclude" xsi:noNamespaceSchemaLocation="MaduraDoc.xsd">
+	<title>
+		<MainTitle>Madura DB Load</MainTitle>
+		<SubTitle>User Guide</SubTitle>
+		<Author>Roger Parkinson</Author>
+		<Revision>$Revision: 4 $</Revision>
+		<image>logo.jpg</image>
+		<xi:include href="MaduraDBLoader.log"/>
+		<references>
+			<reference t="maduradocs" url="http://code.google.com/p/maduradocs/" />
+			<reference t="Apache Licence 2.0" url="http://www.apache.org/licenses/LICENSE-2.0" />
+		</references>
+	</title>
+	<body>
+		<process-log/>
+		<process-references/>
+		<h1 t="Overview">
+		<p>This is an ant task that will run multiple sql files using potentially multiple schemas. It is intended
+		for use during development rather than production for those times when DBAs release a new load of database scripts
+		and you need to update your local database. Normally you would use the <courier>sql</courier> task but that
+		does not handle multiple schemas as well as this.</p>
+		<p>So, if you have a database that spans multiple schemas and you need to run multiple scripts against them all then MaduraDBLoad
+		will help.</p>
+		</h1>
+		<h1 t="Ant">
+		<p>This is what you add to your ant file:</p>
+		<code><![CDATA[
+<target name="load">
+	<taskdef name="dbloader" classname="nz.co.senanque.dbloader.RunDatabaseScripts">
+	  <classpath>
+	  	<fileset dir="${basedir}/lib" includes="*.jar" />
+	  </classpath>
+	</taskdef>
+	<dbloader 
+		dir="${scripts.dir}" 
+		driver="${jdbc.driver}" 
+		drop="true" 
+		debug="false" 
+		jdbcURL="${jdbc.url}" 
+		systemPassword="${system.password}"/>
+</target>
+	]]></code>
+	<p>If you set 'drop' to false it will not drop and rebuild the schemas, otherwise it will.</p>
+	<p>Other options not shown here are:</p>
+	<list>
+	<ll name="defaultTableSpace">Current default is USER.</ll>
+	<ll name="systemUser">Current default is 'system' which is fine for Oracle, maybe not other databases.</ll>
+	<ll name="delimiter">Used to find the schema name in the script file name. Default is dash ('-').</ll>
+	</list>
+	</h1>
+	<h2 t="SQL Scripts">
+	<p>The sql scripts should have names like this:</p>
+	<code><![CDATA[
+	001-MYSCHEMA1-create_schema1_tables.sql
+	002-MYSCHEMA2-create_schema2_tables.sql
+	003-MYSCHEMA3-create_schema3_tables.sql
+	004-MYSCHEMA1-load_test_data.sql
+	005-MYSCHEMA2-load_test_data.sql
+	]]></code>
+	<p>So there are five sql files. These ones have a simple number on the front to determine the order but you
+	can choose any arrangement that works for you, as long as the names sort into the order you want them to run.</p>
+	<p>The schemas are identified by the surrounding dashes. Notice that we use underbars as word separators elsewhere,
+	though actually only the first two dashes will be looked at to identify the schema.</p>
+	<p>Schemas found will be dropped and recreated before we start unless you specify drop=false.</p>
+	<p>Lines starting with '--' '#' 'exit' 'commit' 'set' 'prompt' are ignored in the SQL file, the whole
+	file is surrounded by a start transaction and commit.</p>
+	<p>Functions need to be terminated with a slash (/) like this:</p>
+	<code><![CDATA[
+  CREATE OR REPLACE FUNCTION "MYFUNCTION" (ID NUMBER) RETURN VARCHAR2 IS
+...
+/
+	]]></code>
+	<p>Same with triggers and procedures. Otherwise the commands must end with a semicolon (;).</p>
+	</h2>
+	</body>
+	
+</doc>

@@ -18,7 +18,8 @@
     <info publication="@timestamp@">
         <license name="Apache License, Version 2.0" url="http://www.apache.org/licenses/LICENSE-2.0"/>
         <description homepage="http://code.google.com/p/@ant.project.name@/">
-        Allows configuration of holiday dates and a simple API to figure out if a date is a holiday.
+        An Ant task that scans a directory for sql files and runs them in the right order.
+        It handles multiple schemas (one schema per file) and optionaly drops and recreates the schemas.
         </description>
     </info>
     <publications>

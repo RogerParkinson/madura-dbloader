@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  */
 public class RunDatabaseScripts extends Task {
 	
-	private static final Logger logger = LoggerFactory.getLogger(RunDatabaseScriptsTest.class);
+	private static final Logger logger = LoggerFactory.getLogger(RunDatabaseScripts.class);
 	
 	String m_dir;
 	String m_driver;

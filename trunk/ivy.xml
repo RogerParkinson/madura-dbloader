@@ -20,7 +20,8 @@
         <ivyauthor name="Roger Parkinson" url="http://code.google.com/p/madura-dbloader/"/>
         <repository pattern="http://ivyroundup.googlecode.com/svn/trunk/repo/modules/[organisation]/[module]/[revision]/ivy.xml" ivys="true" url="http://ivyroundup.googlecode.com/" name="ivyroundup"/>
         <description homepage="http://code.google.com/p/madura-dbloader/">
-        Allows configuration of holiday dates and a simple API to figure out if a date is a holiday.
+        An Ant task that scans a directory for sql files and runs them in the right order.
+        It handles multiple schemas (one schema per file) and optionaly drops and recreates the schemas.
         </description>
     </info>	
 	<configurations>
@@ -48,7 +49,6 @@
         
         <dependency org="com.oracle" name="ojdbc" rev="10.2.0.4" conf="test->default"/>
         <exclude org="commons-logging" ext="*"/> <!-- ensures any logging can be used (log4j, logback etc) -->
-        <exclude module="avalon-framework" ext="jar"/>
         <exclude org="logkit" ext="jar"/>
         <exclude org="javax.servlet" ext="jar"/>
         <exclude org="*" ext="*" type="source"/>

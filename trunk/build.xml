@@ -32,7 +32,7 @@
 	<target name="distribute_copy">
 		<echo message="${ant.project.name} distribute_copy: start"/>
 		<ant target="retrieve-dependencies"/>
-		<ant target="junit"/>
+		<ant target="compile-distribute-source"/>
 		<ant target="jar"/>
 		<ant target="docs"/>
 		<javadoc-macro/>
