@@ -38,13 +38,14 @@
 		<dependency org="nz.co.senanque" name="maduradocs" rev="4.5" conf="docs->default"/>
 		<dependency org="org.apache.ant" name="ant" rev="1.8.0" conf="compile->default"/>
 		<dependency org="org.apache.commons" name="commons-lang" rev="2.4" conf="default->default"/>
+
         <dependency org="org.slf4j" name="slf4j" rev="1.5.10" conf="compile->jcl-migration"/> 
-        <dependency org="org.slf4j" name="slf4j" rev="1.5.10" conf="compile->default"/> 
-        <dependency org="org.slf4j" name="slf4j" rev="1.5.10" conf="test->log4j"/> 
+        <dependency org="ch.qos" name="logback" rev="0.9.18"/>
         <dependency org="org.junit" name="junit" rev="4.5" conf="test->default"/>
         <dependency org="org.springframework" name="spring" rev="3.0.0" conf="test->test">
 	        <exclude org="javax.jms" module="jms"/>
 	        <exclude org="org.apache.commons" module="commons-logging"/>
+	        <exclude org="org.aopalliance" module="aopalliance"/>
 	    </dependency>
         
         <dependency org="com.oracle" name="ojdbc" rev="10.2.0.4" conf="test->default"/>

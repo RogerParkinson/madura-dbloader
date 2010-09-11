@@ -1,0 +1,807 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Copyright 2010 Prometheus Consulting
+  
+  Licensed under the Apache License, Version 2.0 (the "License");
+  you may not use this file except in compliance with the License.
+  You may obtain a copy of the License at
+  
+    http://www.apache.org/licenses/LICENSE-2.0
+  
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:xi="http://www.w3.org/2001/XInclude" elementFormDefault="qualified">
+	<xs:import namespace="http://www.w3.org/2001/XInclude" schemaLocation="http://www.w3.org/2001/XInclude.xsd"/>
+	<xs:element name="doc">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="title">
+					<xs:annotation>
+						<xs:documentation>
+						The title section of the document contributes to the title page as well as the footer.
+						</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="MainTitle" type="xs:string" minOccurs="1"/>
+							<xs:element name="SubTitle" type="xs:string" minOccurs="1"/>
+							<xs:element name="Author" type="xs:string" minOccurs="1"/>
+							<xs:element name="Revision" type="xs:string" default="&#36;Revision: &#36;">
+								<xs:annotation>
+									<xs:documentation>
+									Use source control to keep this up to date by using the default value
+									</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="image" type="xs:string" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>
+									The image is scaled and placed on the title page.
+									Make sure you specify the height.
+									</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="height" type="xs:string" default="200px" minOccurs="0">
+								<xs:annotation>
+									<xs:documentation>
+									The image is scaled with this value and placed on the title page.
+									</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element ref="xi:include" minOccurs="0"/>
+							<xs:element name="log" type="xs:string" minOccurs="0" maxOccurs="1" default="&lt;![CDATA[&#36;Log: &#36;]]&gt;">
+								<xs:annotation>
+									<xs:documentation>
+									Gets the change history from source control
+									</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="references" type="referencesType" minOccurs="0" maxOccurs="1">
+								<xs:annotation>
+									<xs:documentation>
+									Specifies the references, e.g. external web pages.
+									</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="reviewers" type="reviewersType" minOccurs="0" maxOccurs="1">
+								<xs:annotation>
+									<xs:documentation>
+									List of people you want to review this document.
+									</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="body">
+					<xs:annotation>
+						<xs:documentation>
+						The main body of the document
+						</xs:documentation>
+					</xs:annotation>
+					<xs:complexType>
+						<xs:choice minOccurs="0" maxOccurs="unbounded">
+							<xs:element name="table" type="tableType" maxOccurs="1">
+							</xs:element>
+							<xs:element name="h1" type="h1Type" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>
+									H1 heading
+									Specify name in t attribute
+									</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="a1" type="a1Type" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>
+									H1 heading
+									Specify name in t attribute
+									</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="comment" type="commentType" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>
+									Specify who and when
+									Comments are not included in PDF
+									</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="process-reviewers" type="xs:string" maxOccurs="1">
+								<xs:annotation>
+									<xs:documentation>
+									Add this if you want the list of reviewers to appear
+									</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="process-references" type="xs:string" maxOccurs="1">
+								<xs:annotation>
+									<xs:documentation>
+									Add this if you want the list of references to appear
+									</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+							<xs:element name="process-log" type="xs:string" maxOccurs="1">
+								<xs:annotation>
+									<xs:documentation>
+									Add this if you want the change history to appear
+									</xs:documentation>
+								</xs:annotation>
+							</xs:element>
+						</xs:choice>
+					</xs:complexType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="tableType">
+		<xs:annotation>
+			<xs:documentation>
+			Specifies a table
+			</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element name="tw" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>
+					Specify table widths. You need a width for each column.
+					These are needed for PDF generation. Not used in HTML.
+					</xs:documentation>
+				</xs:annotation>
+				<xs:simpleType>
+					<xs:restriction base="xs:string"/>
+				</xs:simpleType>
+			</xs:element>
+			<xs:element name="tr" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="th" type="xs:string" minOccurs="0" maxOccurs="unbounded">
+								<xs:annotation>
+									<xs:documentation>
+									Specify table heading, typically the first row of the table has one of these for
+									each column. You can add them anywhere in the table, however, and you'll get the
+									style defined for table headings on that cell.
+									</xs:documentation>
+								</xs:annotation>
+						</xs:element>
+						<xs:element name="td" minOccurs="0" maxOccurs="unbounded">
+							<xs:complexType mixed="true">
+								<xs:choice minOccurs="0" maxOccurs="unbounded">
+									<xs:element name="figureLink" type="figureLinkType">
+										<xs:annotation>
+											<xs:documentation>
+											reference to an image (or figure)
+											specify image name in attribute t
+											</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="img" type="imgType">
+										<xs:annotation>
+											<xs:documentation>
+											include an image. 
+											Specify attributes href, height. 
+											Content is image name
+											</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="sectionLink" type="sectionLinkType">
+										<xs:annotation>
+											<xs:documentation>
+											reference to a section
+											specify section name in attribute t
+											</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="bold" type="boldType">
+										<xs:annotation>
+											<xs:documentation>
+											bold text
+											</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="Year" type="xs:string">
+										<xs:annotation>
+											<xs:documentation>
+											current year
+											</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="ProductVersion" type="xs:string">
+										<xs:annotation>
+											<xs:documentation>
+											Product version
+											</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="footnote" type="xs:string">
+										<xs:annotation>
+											<xs:documentation>
+											Footnote
+											</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="list" type="listType">
+										<xs:annotation>
+											<xs:documentation>
+											List
+											</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="p" type="pType">
+										<xs:annotation>
+											<xs:documentation>
+											Paragraph
+											</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="code" type="codeType">
+										<xs:annotation>
+											<xs:documentation>
+											Code block
+											</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="note" type="noteType">
+										<xs:annotation>
+											<xs:documentation>
+											Note block
+											</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="warning" type="warningType">
+										<xs:annotation>
+											<xs:documentation>
+											Warning block
+											</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="rant" type="rantType">
+										<xs:annotation>
+											<xs:documentation>
+											Rant block, not included in PDF
+											</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="referenceLink" type="referenceLinkType">
+										<xs:annotation>
+											<xs:documentation>
+											reference to an external reference from the references section
+											specify reference name in attribute t
+											</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+									<xs:element name="tableLink" type="tableLinkType">
+										<xs:annotation>
+											<xs:documentation>
+											reference to a named table
+											specify reference name in attribute t
+											</xs:documentation>
+										</xs:annotation>
+									</xs:element>
+								</xs:choice>
+							</xs:complexType>
+						</xs:element>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="t" type="xs:string"/>
+		<xs:attribute name="landscape" type="xs:boolean"/>
+		<xs:attribute name="end" type="xs:boolean"/>
+		<xs:attribute name="width" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:NMTOKEN">
+					<!-- <xs:enumeration value="1cm"/> -->
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="figureLinkType">
+		<xs:attribute name="t" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="imgType">
+		<xs:simpleContent>
+			<xs:extension base="xs:string">
+				<xs:attribute name="href" type="xs:string" use="required"/>
+				<xs:attribute name="width" type="xs:string"/>
+				<xs:attribute name="height" type="xs:string"/>
+				<xs:attribute name="landscape" type="xs:boolean"/>
+				<xs:attribute name="end" type="xs:boolean"/>
+			</xs:extension>
+		</xs:simpleContent>
+	</xs:complexType>
+	<xs:complexType name="listEntryType">
+		<xs:complexContent>
+			<xs:extension base="pType">
+				<xs:choice maxOccurs="unbounded">
+					<xs:element name="list" type="listType">
+						<xs:annotation>
+							<xs:documentation>
+							List
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	
+	<xs:complexType name="listType" mixed="true">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="ll">
+				<xs:annotation>
+					<xs:documentation>
+					Named list element. Use the name attribute to specify the name.
+					The name appears highlighted in the left hand side. 
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:complexContent>
+						<xs:extension base="listEntryType">
+							<xs:attribute name="name" use="required"/>
+						</xs:extension>
+					</xs:complexContent>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="le" type="listEntryType">
+				<xs:annotation>
+					<xs:documentation>
+					Bulleted list element. 
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ln" type="listEntryType">
+				<xs:annotation>
+					<xs:documentation>
+					Numbered list element. 
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="headingType">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="p" type="pType"/>
+			<xs:element name="list" type="listType"/>
+			<xs:element name="img" type="imgType">
+				<xs:annotation>
+					<xs:documentation>
+					include an image. 
+					Specify attributes href, height. 
+					Content is image name
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="code" type="codeType">
+				<xs:annotation>
+					<xs:documentation>
+					Code block
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="note" type="noteType">
+				<xs:annotation>
+					<xs:documentation>
+					Note block
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="warning" type="warningType">
+				<xs:annotation>
+					<xs:documentation>
+					Warning block
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="rant" type="rantType">
+				<xs:annotation>
+					<xs:documentation>
+					Rant block, not included in PDF
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="table" type="tableType">
+				<xs:annotation>
+					<xs:documentation>
+					specify a table
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="comment" type="commentType" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>
+					Specify who and when
+					Comments are not included in PDF
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+		<xs:attribute name="t" type="xs:string" use="required"/>
+		<xs:attribute name="landscape" type="xs:boolean"/>
+		<xs:attribute name="end" type="xs:boolean"/>
+	</xs:complexType>
+	<xs:complexType name="h1Type">
+		<xs:complexContent>
+			<xs:extension base="headingType">
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="h2" type="h2Type">
+						<xs:annotation>
+							<xs:documentation>
+							H2 heading
+							Specify name in t attribute
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="h2Type">
+		<xs:complexContent>
+			<xs:extension base="headingType">
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="h3" type="h3Type">
+						<xs:annotation>
+							<xs:documentation>
+							H3 heading
+							Specify name in t attribute
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="h3Type">
+		<xs:complexContent>
+			<xs:extension base="headingType">
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="h4" type="h4Type">
+						<xs:annotation>
+							<xs:documentation>
+							H4 heading
+							Specify name in t attribute
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="h4Type">
+		<xs:complexContent>
+			<xs:extension base="headingType">
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="h5" type="headingType">
+						<xs:annotation>
+							<xs:documentation>
+							H5 heading
+							Specify name in t attribute
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="a1Type">
+		<xs:complexContent>
+			<xs:extension base="headingType">
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="a2" type="a2Type">
+						<xs:annotation>
+							<xs:documentation>
+							a2 heading
+							Specify name in t attribute
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="a2Type">
+		<xs:complexContent>
+			<xs:extension base="headingType">
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="a3" type="a3Type">
+						<xs:annotation>
+							<xs:documentation>
+							a3 heading
+							Specify name in t attribute
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="a3Type">
+		<xs:complexContent>
+			<xs:extension base="headingType">
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="a4" type="a4Type">
+						<xs:annotation>
+							<xs:documentation>
+							a4 heading
+							Specify name in t attribute
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="a4Type">
+		<xs:complexContent>
+			<xs:extension base="headingType">
+				<xs:choice minOccurs="0" maxOccurs="unbounded">
+					<xs:element name="a4" type="headingType">
+						<xs:annotation>
+							<xs:documentation>
+							a5 heading
+							Specify name in t attribute
+							</xs:documentation>
+						</xs:annotation>
+					</xs:element>
+				</xs:choice>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="pType" mixed="true">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="figureLink" type="figureLinkType">
+				<xs:annotation>
+					<xs:documentation>
+					reference to an image (or figure)
+					specify image name in attribute t
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="sectionLink" type="sectionLinkType">
+				<xs:annotation>
+					<xs:documentation>
+					reference to a section
+					specify section name in attribute t
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="bold" type="boldType">
+				<xs:annotation>
+					<xs:documentation>
+					bold block
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="emph" type="emphType">
+				<xs:annotation>
+					<xs:documentation>
+					emphasis (italics) block
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="courier" type="courierType">
+				<xs:annotation>
+					<xs:documentation>
+					courier block (similar to code, but inline)
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Year" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>
+					current year
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="ProductVersion" type="xs:string">
+				<xs:annotation>
+					<xs:documentation>
+					Product version
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="footnote" type="xs:string"/>
+			<xs:element name="referenceLink" type="referenceLinkType">
+				<xs:annotation>
+					<xs:documentation>
+					reference to an external reference from the references section
+					specify reference name in attribute t
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="tableLink" type="tableLinkType">
+				<xs:annotation>
+					<xs:documentation>
+					reference to a named table
+					specify reference name in attribute t
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="comment" type="commentType" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>
+					Specify who and when
+					Comments are not included in PDF
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+		</xs:choice>
+	</xs:complexType>
+
+	<xs:complexType name="commentType" mixed="true">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="list" type="listType"/>
+			<xs:element name="p" type="pType"/>
+		</xs:choice>
+		<xs:attribute name="who" type="xs:string" use="required"/>
+		<xs:attribute name="when" type="xs:date" use="required"/>
+	</xs:complexType>
+
+	<xs:simpleType name="noteType">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="warningType">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="codeType">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="rantType">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:simpleType name="courierType">
+		<xs:restriction base="xs:string"/>
+	</xs:simpleType>
+	<xs:complexType name="boldType" mixed="true">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="figureLink" type="figureLinkType">
+				<xs:annotation>
+					<xs:documentation>
+					reference to an image (or figure)
+					specify image name in attribute t
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="img" type="imgType">
+				<xs:annotation>
+					<xs:documentation>
+					include an image. 
+					Specify attributes href, height. 
+					Content is image name
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="sectionLink" type="sectionLinkType">
+				<xs:annotation>
+					<xs:documentation>
+					reference to a section
+					specify section name in attribute t
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="referenceLink" type="referenceLinkType">
+				<xs:annotation>
+					<xs:documentation>
+					reference to an external reference from the references section
+					specify reference name in attribute t
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="tableLink" type="tableLinkType">
+				<xs:annotation>
+					<xs:documentation>
+					reference to a named table
+					specify reference name in attribute t
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Year" type="xs:string"/>
+			<xs:element name="ProductVersion" type="xs:string"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="emphType" mixed="true">
+		<xs:choice minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="figureLink" type="figureLinkType">
+				<xs:annotation>
+					<xs:documentation>
+					reference to an image (or figure)
+					specify image name in attribute t
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="img" type="imgType">
+				<xs:annotation>
+					<xs:documentation>
+					include an image. 
+					Specify attributes href, height. 
+					Content is image name
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="sectionLink" type="sectionLinkType">
+				<xs:annotation>
+					<xs:documentation>
+					reference to a section
+					specify section name in attribute t
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="referenceLink" type="referenceLinkType">
+				<xs:annotation>
+					<xs:documentation>
+					reference to an external reference from the references section
+					specify reference name in attribute t
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="tableLink" type="tableLinkType">
+				<xs:annotation>
+					<xs:documentation>
+					reference to a named table
+					specify reference name in attribute t
+					</xs:documentation>
+				</xs:annotation>
+			</xs:element>
+			<xs:element name="Year" type="xs:string"/>
+			<xs:element name="ProductVersion" type="xs:string"/>
+		</xs:choice>
+	</xs:complexType>
+	<xs:complexType name="referenceLinkType">
+		<xs:attribute name="t" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="tableLinkType">
+		<xs:attribute name="t" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="sectionLinkType">
+		<xs:attribute name="t" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="referencesType">
+		<xs:sequence>
+			<xs:element name="reference" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>
+					External references have a name and an optional url.
+					If present the url will make a link to the document
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute name="t" type="xs:string" use="required"/>
+							<xs:attribute name="url" type="xs:string"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="reviewersType">
+		<xs:sequence>
+			<xs:element name="reviewer" minOccurs="1" maxOccurs="unbounded">
+				<xs:annotation>
+					<xs:documentation>
+					Reviewers name a name (short name)
+					A flag indicating if they have completed the review
+					and email address and a full name for display
+					</xs:documentation>
+				</xs:annotation>
+				<xs:complexType>
+					<xs:simpleContent>
+						<xs:extension base="xs:string">
+							<xs:attribute name="name" type="xs:string" use="required"/>
+							<xs:attribute name="complete" type="xs:boolean" use="required"/>
+							<xs:attribute name="email" type="xs:string" use="required"/>
+							<xs:attribute name="fullName" type="xs:string" use="required"/>
+						</xs:extension>
+					</xs:simpleContent>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+	</xs:complexType>
+</xs:schema>
