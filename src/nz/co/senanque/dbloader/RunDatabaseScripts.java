@@ -387,6 +387,11 @@ public class RunDatabaseScripts extends Task {
 			String s = line.trim().toUpperCase();
 			if (!s.startsWith("--") && !s.startsWith("REM") && !s.startsWith("#") && !s.startsWith("//"))
 			{
+			    int dash = line.indexOf("--");
+			    if (dash != -1)
+			    {
+			        line = line.substring(0,dash);
+			    }
 				return line;
 			}
 			line = br.readLine();
