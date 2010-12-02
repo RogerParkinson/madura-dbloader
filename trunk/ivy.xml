@@ -35,6 +35,7 @@
 	</publications>
 	<dependencies>
 		<dependency org="net.bluecow" name="ant-googlecode" rev="0.0.2" conf="build->default"/>
+		<dependency org="net.sourceforge.antcontrib" name="ant-contrib" rev="1.0b3" conf="build->default"/>
 		<dependency org="nz.co.senanque" name="maduradocs" rev="4.5" conf="docs->default"/>
 		<dependency org="org.apache.ant" name="ant" rev="1.8.0" conf="compile->default"/>
 		<dependency org="org.apache.commons" name="commons-lang" rev="2.4" conf="default->default"/>
@@ -48,7 +49,7 @@
 	        <exclude org="org.aopalliance" module="aopalliance"/>
 	    </dependency>
         
-        <dependency org="com.oracle" name="ojdbc" rev="10.2.0.4" conf="test->default"/>
+        <dependency org="com.oracle" name="ojdbc" rev="10.2.0.1" conf="test->default"/>
         <exclude org="commons-logging" ext="*"/> <!-- ensures any logging can be used (log4j, logback etc) -->
         <exclude org="logkit" ext="jar"/>
         <exclude org="javax.servlet" ext="jar"/>
