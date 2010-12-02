@@ -20,21 +20,21 @@
 -->
 <project xmlns:ivy="urn:ivy-ant">
 
-	<property name="package.dir" value="${basedir}/package" />
+	<property name="package.dir" value="${basedir}/temp/package" />
 	<property name="ivy.install.version" value="2.1.0" />
 	<property name="ivy.resolve" value="${basedir}/ivy.xml" />
 	<property name="ivy.jar.dir" value="${basedir}/ivy" />
 	<property name="ivy.settings" value="file://${basedir}/ivysettings.xml"/>
 	<property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
 	<basename property="project.name" file="${basedir}"/>
-
-	<property name="dist.remote" value="false"/>
-	<condition property="dist.url" value="file://${basedir}/package">
-		<isfalse value="${dist.remote}"/>
-	</condition>
-	<condition property="dist.url" value="http://${ant.project.name}.googlecode.com/files">
-		<istrue value="${dist.remote}"/>
-	</condition>
+	<property name="junit.show.output" value="false"/>
+	<property name="javac.compile.debug" value="no"/>
+	<property name="javac.compile.deprecation" value="no"/>
+	<property name="junit.tests" value="**/*Test.java"/>
+	<tstamp>
+		<format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" />
+		<format property="year" pattern="yyyy" />
+	</tstamp>
 
 	<property name="suppress.retrieve-dependencies" value="false"/>
 	<condition property="suppress.retrieve-dependencies-true" value="true">
@@ -49,15 +49,17 @@
 	</condition>
 
 	<property name="buildproperties" value="${ant.project.name}.properties"/>
-	<property name="javadoc.dir" value="${basedir}/javadoc"/>
-	<tstamp>
-		<format property="TODAY" pattern="yyyy-MM-dd HH:mm:ss" />
-	</tstamp>
-	<tstamp>
-		<format property="year" pattern="yyyy" />
-	</tstamp>
+	<property name="results.dir" value="${basedir}/temp/results"/>
+	<property name="javadoc.dir" value="${basedir}/temp/javadoc"/>
+	
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+		  <classpath>
+		  	<fileset dir="${basedir}/temp/buildlib" includes="*.jar" />
+		  </classpath>
+	</taskdef>
 
-	<target name="download-ivy" unless="${ivy.already.downloaded}">
+
+	<target name="download-ivy" unless="ivy.already.downloaded">
 		<mkdir dir="${ivy.jar.dir}"/>
 		<get src="http://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar" dest="${ivy.jar.dir}/ivy-${ivy.install.version}.jar" usetimestamp="true" />
 		<echo>ivy download complete.</echo>
@@ -74,10 +76,11 @@
 	</target>
 
 	<macrodef name="manifest-macro">
-		<attribute name="manifest.file" default="MANIFEST.MF"/>
+		<attribute name="manifest.file" default="${results.dir}/MANIFEST.MF"/>
 		<attribute name="buildproperties" default="${buildproperties}"/>
 		<attribute name="build.version" default="${build.version}"/>
 	<sequential>
+		<mkdir dir="${results.dir}"/>
 		<manifest file="@{manifest.file}">
 			<attribute name="Built-By" value="${user.name}"/>
 			<attribute name="Implementation-Version" 
@@ -102,6 +105,8 @@
 		  <entry  key="build.date" type="date" value="now" pattern="dd MMM yyyy HH:mm"/>
 		  <entry  key="build.version" type="string" value="@{build.version}"/>
 		</propertyfile>
+		<mkdir dir="${basedir}/bin"/>
+		<copy todir="${basedir}/bin" file="@{buildproperties}"/>
 	</sequential>
 	</macrodef>
 
@@ -111,6 +116,7 @@
 	<sequential>
 		<delete dir="@{target.dir}" failonerror="false"/>
 		<mkdir dir="@{target.dir}"/>
+		<mkdir dir="${results.dir}"/>
 		<javadoc packagenames="nz.co.senanque.*"
 					classpathref="libs"
 		           sourcepath="${srcpath}"
@@ -122,7 +128,7 @@
 		           windowtitle="${project.name}">
 			<bottom><![CDATA[<i>Copyright &#169; ${year} ${build.company}. All Rights Reserved.</i>]]></bottom>
 		  </javadoc>
-		<zip destfile="${ant.project.name}-javadocs.zip" basedir="@{target.dir}"/>
+		<zip destfile="${results.dir}/${ant.project.name}-javadocs.zip" basedir="@{target.dir}"/>
 	</sequential>
 	</macrodef>
 	
@@ -130,13 +136,14 @@
 		<attribute name="target.dir" default="${package.dir}"/>
 		<attribute name="project.name" default="${ant.project.name}"/>
 		<attribute name="build.version" default="${build.version}"/>
+		<attribute name="dist.url" default="http://${ant.project.name}.googlecode.com/files"/>
 	<sequential>
 		<echo>ivyroundup-macro</echo>
 		<delete dir="@{target.dir}" failonerror="false"/>
 		<mkdir dir="@{target.dir}"/>
-		<copy tofile="@{target.dir}/@{project.name}-javadocs-@{build.version}.zip" file="@{project.name}-javadocs.zip"/>
-		<copy tofile="@{target.dir}/@{project.name}-source-@{build.version}.zip" file="@{project.name}-source.zip"/>
-		<copy tofile="@{target.dir}/@{project.name}-@{build.version}.jar" file="@{project.name}.jar"/>
+		<copy tofile="@{target.dir}/@{project.name}-javadocs-@{build.version}.zip" file="${results.dir}/@{project.name}-javadocs.zip"/>
+		<copy tofile="@{target.dir}/@{project.name}-source-@{build.version}.zip" file="${results.dir}/@{project.name}-source.zip"/>
+		<copy tofile="@{target.dir}/@{project.name}-@{build.version}.jar" file="${results.dir}/@{project.name}.jar"/>
 		<zip destfile="@{target.dir}/@{project.name}-@{build.version}.zip" >
 			<zipfileset dir="@{target.dir}">
 				<include name="@{project.name}-source-@{build.version}.zip"/>
@@ -149,7 +156,7 @@
 		<copy file="packager-template.xml" tofile="@{target.dir}/packager.xml" overwrite="true">
 			<filterset>
 				<filter token="sha1" value="${sha1}"/>
-				<filter token="dist.url" value="${dist.url}"/>
+				<filter token="dist.url" value="@{dist.url}"/>
 				<filter token="timestamp" value="${timestamp}"/>
 				<filter token="ant.project.name" value="${ant.project.name}"/>
 				<filter token="project.name" value="${project.name}"/>
@@ -161,7 +168,7 @@
 		<copy file="ivy-template.xml" tofile="@{target.dir}/ivy.xml" overwrite="true">
 			<filterset>
 				<filter token="sha1" value="${sha1}"/>
-				<filter token="dist.url" value="${dist.url}"/>
+				<filter token="dist.url" value="@{dist.url}"/>
 				<filter token="timestamp" value="${timestamp}"/>
 				<filter token="ant.project.name" value="${ant.project.name}"/>
 				<filter token="project.name" value="${project.name}"/>
@@ -174,7 +181,8 @@
 	<macrodef name="source-macro">
 		<attribute name="project.name" default="${ant.project.name}"/>
 	<sequential>
-		<zip destfile="@{project.name}-source.zip" >
+		<mkdir dir="${results.dir}/"/>
+		<zip destfile="${results.dir}/@{project.name}-source.zip" >
 			<zipfileset dir="./src" prefix="src"/>
 			<zipfileset dir="./test" prefix="test"/>
 			<zipfileset dir="./docs" prefix="docs"/>
@@ -182,10 +190,7 @@
 	</sequential>
 	</macrodef>
 
-	<condition property="repo.dir.set">
-		<isset property="repo.dir"/>
-	</condition>
-	<target name="do_copy_to_repo" if="repo.dir.set">
+	<target name="CopyToRemoteRepo">
 		<echo>Copying repo files to ${repo.dir}/${ant.project.name}/${build.version}</echo>
 		<mkdir dir="${repo.dir}/${ant.project.name}/${build.version}"/>
 		<copy overwrite="true" todir="${repo.dir}/${ant.project.name}/${build.version}">
@@ -212,7 +217,6 @@
 		        targetfilename="${ant.project.name}-${build.version}.zip"
 		        summary="Packaged for ivyroundup and general use "/>
 	</target>
-	<target name="copy_to_repo" depends="do_copy_to_repo"/>
 
 	<target name="upload-docs" depends="retrieve-dependencies,docs">
 		<echo>Uploading ${project.name}-${build.version}.pdf to google</echo>
@@ -231,51 +235,60 @@
 	</target>
 
 	<target name="compile-distribute-source">
-		<updatebuild-macro/>
-		<delete dir="${basedir}/bin" failonerror="false"/>
 		<mkdir dir="${basedir}/bin"/>
-		<javac destdir="${basedir}/bin" debug="off" deprecation="on" target="${javac.compile.target}" srcdir="${srcpath}">
+		<javac destdir="${basedir}/bin" debug="${javac.compile.debug}" deprecation="${javac.compile.deprecation}" target="${javac.compile.target}" srcdir="${srcpath}">
 			<classpath>
 				<path refid="libs"/>
 			</classpath>
 		</javac>
-		<copy todir="${basedir}/bin" flatten="no" >
-			<fileset dir="${basedir}/src" includes="**/*.properties,**/*.xml,**/*.xsd"/>
+		<foreach delimiter=":" list="${srcpath}" param="d" target="copysource"/>
+	</target>
+	
+	<target name="copysource">
+		<copy verbose="true" todir="${basedir}/bin" flatten="no" >
+			<fileset dir="${d}" includes="**/*.properties,**/*.xml,**/*.xsd,**/*.html"/>
+			<fileset dir="${d}" includes="META-INF/**/*.*"/>
 		</copy>
 	</target>
 
 	<target name="compile-test-source">
 		<updatebuild-macro/>
-		<delete dir="${basedir}/bin" failonerror="false"/>
 		<mkdir dir="${basedir}/bin"/>
 		<javac destdir="${basedir}/bin" debug="on" deprecation="on" target="${javac.compile.target}" srcdir="${testpath}">
 			<classpath>
 				<path refid="libs"/>
 			</classpath>
 		</javac>
-		<copy todir="${basedir}/bin" flatten="no" >
-			<fileset dir="${basedir}/src" includes="**/*.properties,**/*.xml,**/*.xsd"/>
-			<fileset dir="${basedir}/test" includes="**/*.properties,**/*.xml,**/*.html"/>
-		</copy>
+		<foreach delimiter=":" list="${testpath}" param="d" target="copysource"/>
 	</target>
 
 	<target name="junit">
-		<junit printsummary="yes" fork="yes" haltonfailure="yes" >
-		  <formatter type="plain" />
+		<mkdir dir="${basedir}/temp/junit"/>
+		<echo>${junit.tests}</echo>
+		<junit printsummary="yes" showoutput="${junit.show.output}" fork="yes" haltonfailure="yes" >
+		  <formatter type="xml" />
 		  <classpath>
+			<fileset dir="${basedir}/">
+		      	<include name="${ant.project.name}.jar"/>
+		    </fileset>
 			<pathelement location="${basedir}/bin"/>
 			<fileset dir="${basedir}/temp/lib">
 		      	<include name="*.jar"/>
 		    </fileset>
 		  </classpath>
-		  <test name="${junit.class}" />
+            <batchtest haltonfailure="yes" todir="${basedir}/temp/junit" >
+                    <fileset dir="${basedir}/test">
+                          <include name="${junit.tests}"/>
+                        </fileset>          
+            </batchtest>
 		</junit>
 	</target>
 
 	<target name="jar-meta-inf" depends="compile-distribute-source">
+		<mkdir dir="${results.dir}/"/>
 		<manifest-macro/>
-		<jar jarfile="${ant.project.name}.jar" index="true" manifest="MANIFEST.MF">
-			<metainf dir="${basedir}/meta-inf">
+		<jar jarfile="${results.dir}/${ant.project.name}.jar" index="true" manifest="${results.dir}/MANIFEST.MF">
+			<metainf dir="${basedir}/src/META-INF">
 				<include name="spring.*"/>
 				<include name="services/*.*"/>
 			</metainf>
@@ -289,8 +302,9 @@
 	</target>
 	
 	<target name="jar" depends="compile-distribute-source">
+		<mkdir dir="${results.dir}/"/>
 		<manifest-macro/>
-		<jar jarfile="${ant.project.name}.jar" index="true" manifest="MANIFEST.MF">
+		<jar jarfile="${results.dir}/${ant.project.name}.jar" index="true" manifest="${results.dir}/MANIFEST.MF">
 			<fileset dir="${basedir}/bin">
 				<exclude name="**/tests/**"/>
 				<exclude name="**/package.html"/>
@@ -313,15 +327,11 @@
 		</ant>			
 	</target>
 
-	<target name="do_retrieve-dependencies" depends="clean,init-ivy">
+	<target name="retrieve-dependencies" depends="clean,init-ivy">
 		<ivy:retrieve conf="default" pattern="${basedir}/temp/lib/[artifact]-[revision].[ext]" />
 		<ivy:retrieve conf="test" pattern="${basedir}/temp/lib/[artifact]-[revision].[ext]" />
 		<ivy:retrieve conf="docs" pattern="${basedir}/temp/doclib/[artifact].[ext]" />
 		<ivy:retrieve conf="build" pattern="${basedir}/temp/buildlib/[artifact].[ext]" />
-	</target>
-
-	<target name="retrieve-dependencies" unless="suppress.retrieve-dependencies-true">
-		<antcall target="do_retrieve-dependencies"/>
 	</target>
 
 	<target name="clean">
@@ -334,6 +344,21 @@
 		<mkdir dir="${basedir}/temp/buildlib"/>
 		<mkdir dir="${basedir}/temp/pdf"/>
 		<mkdir dir="${basedir}/temp/working"/>
+		<delete failonerror="false">
+			<fileset dir="generated">
+			    <include name="**/*.java;**/*.properties;**/*.xml"/>
+			</fileset>
+		</delete>
+
+	</target>
+
+	<target name="copyToLocalRepo">
+		<echo>Copying repo files to ${repo.dir}/${ant.project.name}/${build.version}</echo>
+		<mkdir dir="${repo.dir}/${ant.project.name}/${build.version}"/>
+		<copy overwrite="true" todir="${repo.dir}/${ant.project.name}/${build.version}">
+			<fileset file="${basedir}/temp/package/ivy.xml"/>
+			<fileset file="${basedir}/temp/package/packager.xml"/>
+		</copy>
 	</target>
 
 </project>

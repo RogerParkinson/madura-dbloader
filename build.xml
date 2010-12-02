@@ -14,7 +14,7 @@
   limitations under the License.
 -->
 
-<project name="madura-dbloader" default="distribute_copy" basedir="." xmlns:ivy="urn:ivy-ant">
+<project name="madura-dbloader" default="test_copy" basedir="." xmlns:ivy="urn:ivy-ant">
 
 	<property file="./build.properties"/>
 	<property name="jar" value="${ant.project.name}"/>
@@ -29,21 +29,42 @@
 
 	<import file="ant-targets.xml"/>
 	
-	<target name="distribute_copy">
+	<target name="distribute_copy" description="build the distribution and copy to the target repo">
 		<echo message="${ant.project.name} distribute_copy: start"/>
 		<ant target="retrieve-dependencies"/>
-		<ant target="compile-distribute-source"/>
 		<ant target="jar"/>
 		<ant target="docs"/>
 		<javadoc-macro/>
 		<source-macro/>
 		<property file="${buildproperties}"/>
 		<ivyroundup-macro />
-		<ant target="copy_to_repo"/>
+		<ant target="CopyToRemoteRepo"/>
 		<echo message="${ant.project.name} distribute_copy:: complete"/>
 		<echo message="Build Number  ${build.number}"/>		
 		<echo message="Build Date    ${build.date}"/>		
 		<echo message="Build Version ${build.version}"/>
 	</target>
+	
+	<target name="test_copy" description="build and run the unit tests and copy result to local repo">
+		<echo message="${ant.project.name} test_copy start"/>
+		<ant target="retrieve-dependencies"/>
+		<ant target="jar"/>
+		<!--
+		<ant target="compile-test-source"/>
+		<ant target="junit"/>
+		-->
+		<ant target="docs"/>
+		<javadoc-macro/>
+		<source-macro/>
+		<property file="${buildproperties}"/>
+		<ivyroundup-macro dist.url="file:${package.dir}"/>
+		<ant target="copyToLocalRepo"/>
+		<property file="${buildproperties}"/>
+		<echo message="${ant.project.name} test_copy:: complete"/>
+		<echo message="Build Number  ${build.number}"/>		
+		<echo message="Build Date    ${build.date}"/>		
+		<echo message="Build Version ${build.version}"/>
+	</target>
+
 
 </project>
