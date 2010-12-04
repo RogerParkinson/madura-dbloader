@@ -18,6 +18,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.MessageFormat;
+import java.util.Properties;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -25,6 +26,7 @@ import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.tools.ant.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
 
 /**
  * @author roger
@@ -64,6 +66,8 @@ public class RunDatabaseScripts extends Task {
 
 	private int m_lineCount=0;
 	private int m_errorCount=0;
+
+    private boolean m_ignoreConstraints;
 	
 	
 	public boolean isDebug() {
@@ -133,6 +137,8 @@ public class RunDatabaseScripts extends Task {
 
 
 	public void execute() {
+	    
+	    
 		
 		long start = System.currentTimeMillis();
 		
@@ -177,6 +183,20 @@ public class RunDatabaseScripts extends Task {
     		throw new RuntimeException(MessageFormat.format("Error count: {0,number,integer}. See log for details",m_errorCount));
     	}
     }
+	
+	private void displayVersion()
+	{
+	    try
+        {
+            Properties p = new Properties();
+            p.load(this.getClass().getResourceAsStream("madura-dbloader"));
+            System.out.println("madura-dbloader "+p.getProperty("build.version"));
+        }
+        catch (IOException e)
+        {
+            // ignore
+        }
+	}
 	
 	private void registerDriver()
 	{
@@ -246,6 +266,10 @@ public class RunDatabaseScripts extends Task {
 					logger.info(MessageFormat.format("processing line: {0,number,integer} of {1}",m_lineCount,m_currentFile));
 				}
 				boolean ignoreCommand = false;
+                if (!StringUtils.hasLength(s))
+                {
+                    ignoreCommand = true;
+                }
 				for (String ignore: m_ignoreCommands)
 				{
 					if (s1.startsWith(ignore))
@@ -253,6 +277,13 @@ public class RunDatabaseScripts extends Task {
 						ignoreCommand = true;
 						break;
 					}
+				}
+				if (m_ignoreConstraints)
+				{
+				    if (s1.startsWith("ALTER TABLE") && s1.indexOf("ADD CONSTRAINT")>0)
+				    {
+				        ignoreCommand = true;
+				    }
 				}
 				if (!ignoreCommand)
 				{
@@ -286,6 +317,7 @@ public class RunDatabaseScripts extends Task {
 					}
 				}
 			} catch (SQLException e) {
+			    e.printStackTrace();
 				String s1 = e.getMessage();
 				String s2 = MessageFormat.format("error at line: {0,number,integer} of {1}: {2}\n{3}",new Object[]{m_lineCount,fileName,s1,s});
 				if (!s1.startsWith("ORA-00955"))
@@ -390,7 +422,14 @@ public class RunDatabaseScripts extends Task {
 			    int dash = line.indexOf("--");
 			    if (dash != -1)
 			    {
-			        line = line.substring(0,dash);
+			        String newLine = line.substring(0,dash);
+			        int singleQuotes = StringUtils.countOccurrencesOf(newLine, "'");
+			        int doubleQuotes = StringUtils.countOccurrencesOf(newLine, "\"");
+			        if ((singleQuotes % 2) == 0 && (doubleQuotes %2 == 0))
+			        {
+			            // only if the quotes balance.
+			            line = newLine;
+			        }
 			    }
 				return line;
 			}
@@ -454,4 +493,12 @@ public class RunDatabaseScripts extends Task {
 			throw new RuntimeException(e);
 		}
 	}
+    public boolean isIgnoreConstraints()
+    {
+        return m_ignoreConstraints;
+    }
+    public void setIgnoreConstraints(boolean ignoreConstraints)
+    {
+        m_ignoreConstraints = ignoreConstraints;
+    }
 }

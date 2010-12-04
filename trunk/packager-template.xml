@@ -16,7 +16,7 @@
     under the License.
 -->
 
-<packager-module rev="$Id: packager-template.xml,v 1.1 2010/04/04 20:00:05 roger Exp $">
+<packager-module rev="$Id: packager.xml 1172 2010-04-13 20:04:52Z archie.cobbs $">
 
     <property name="download.name" value="${ivy.packager.module}"/>
     <property name="revision" value="${ivy.packager.revision}"/>
@@ -35,6 +35,7 @@
         <zip destfile="artifacts/javadocs/javadoc.zip">
             <fileset dir="javadoc"/>
         </zip>
+        
         <!-- source -->
         <mkdir dir="source"/>
         <unzip src="archive/${download.name}-source-${revision}.zip" dest="source"/>

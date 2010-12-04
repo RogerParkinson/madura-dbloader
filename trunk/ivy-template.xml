@@ -31,7 +31,9 @@
     <dependencies>
 		<dependency org="org.apache.commons" name="commons-lang" rev="2.4" conf="default->default"/>
         <dependency org="org.slf4j" name="slf4j" rev="1.5.11" conf="default->jcl-migration"/> 
-        <dependency org="ch.qos" name="logback" rev="0.9.18"/>
+        <dependency org="ch.qos" name="logback" rev="0.9.18">
+        	<exclude org="org.slf4j" module="slf4j"/>
+        </dependency>
         <exclude org="commons-logging" ext="*"/>
         <exclude org="logkit" ext="jar"/>
         <exclude org="javax.servlet" ext="jar"/>
