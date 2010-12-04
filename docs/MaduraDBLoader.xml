@@ -48,9 +48,10 @@
 	<ll name="defaultTableSpace">Current default is USER.</ll>
 	<ll name="systemUser">Current default is 'system' which is fine for Oracle, maybe not other databases.</ll>
 	<ll name="delimiter">Used to find the schema name in the script file name. Default is dash ('-').</ll>
+	<ll name="ignoreConstraints">default=false, if true then no foreign key constraints will be created.</ll>
 	</list>
 	</h1>
-	<h2 t="SQL Scripts">
+	<h1 t="SQL Scripts">
 	<p>The sql scripts should have names like this:</p>
 	<code><![CDATA[
 	001-MYSCHEMA1-create_schema1_tables.sql
@@ -73,7 +74,30 @@
 /
 	]]></code>
 	<p>Same with triggers and procedures. Otherwise the commands must end with a semicolon (;).</p>
-	</h2>
+	</h1>
+	<a1 t="Release Notes">
+		<table width="12cm">
+			<tw>12cm</tw>
+		<tr>
+			<th>1.1</th>
+		</tr>
+		<tr>
+			<td>Optionally disable creation of foreign key constraints. Flag is 'ignoreConstraints'</td>
+		</tr>
+		<tr>
+			<td>Line based comments now supported, as well as correctly handling comment-like structures in quotes.</td>
+		</tr>
+		<tr>
+			<td>Handle lone semicolons with no associated statement.</td>
+		</tr>
+		<tr>
+			<th>1.0</th>
+		</tr>
+		<tr>
+			<td>Initial version</td>
+		</tr>
+		</table>
+	</a1>
 	</body>
 	
 </doc>
