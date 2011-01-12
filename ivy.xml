@@ -36,16 +36,15 @@
 	<dependencies>
 		<dependency org="net.bluecow" name="ant-googlecode" rev="0.0.2" conf="build->default"/>
 		<dependency org="net.sourceforge.antcontrib" name="ant-contrib" rev="1.0b3" conf="build->default"/>
-		<dependency org="nz.co.senanque" name="maduradocs" rev="4.5" conf="docs->default"/>
+		<dependency org="nz.co.senanque" name="maduradocs" rev="5.0.2" conf="docs->default"/>
 		<dependency org="org.apache.ant" name="ant" rev="1.8.0" conf="compile->default"/>
 		<dependency org="org.apache.commons" name="commons-lang" rev="2.4" conf="default->default"/>
 
-        <dependency org="org.slf4j" name="slf4j" rev="1.5.10" conf="compile->jcl-migration"/> 
-        <dependency org="ch.qos" name="logback" rev="0.9.18" conf="test->default">
-        	<exclude org="org.slf4j" module="slf4j"/>
-        </dependency>
+        <dependency org="org.slf4j" name="slf4j" rev="1.6.1" conf="compile->jcl-migration"/> 
+        <dependency org="org.slf4j" name="slf4j" rev="1.6.1" conf="compile->core"/> 
+        <dependency org="ch.qos" name="logback" rev="0.9.24" conf="test->default" />
         <dependency org="org.junit" name="junit" rev="4.5" conf="test->default"/>
-        <dependency org="org.springframework" name="spring" rev="3.0.0" conf="test->test">
+        <dependency org="org.springframework" name="spring" rev="3.0.0" conf="default->test">
 	        <exclude org="javax.jms" module="jms"/>
 	        <exclude org="org.apache.commons" module="commons-logging"/>
 	        <exclude org="org.aopalliance" module="aopalliance"/>
@@ -54,6 +53,7 @@
 		<dependency org="org.hsqldb" name="hsqldb" rev="1.8.0.10" conf="test->default"/>
         <dependency org="com.oracle" name="ojdbc" rev="10.2.0.1" conf="test->default"/>
         <exclude org="commons-logging" ext="*"/> <!-- ensures any logging can be used (log4j, logback etc) -->
+        <exclude org="avalon-framework" ext="jar"/>
         <exclude org="logkit" ext="jar"/>
         <exclude org="javax.servlet" ext="jar"/>
         <exclude org="*" ext="*" type="source"/>

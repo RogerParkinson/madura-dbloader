@@ -164,8 +164,16 @@ public class RunDatabaseScripts extends Task {
     	for (File f: files)
     	{
     		String name = f.getName();
-    		sqlFiles.add(name);
-    		users.add(extractUserName(name));
+    		try
+            {
+                String userName = extractUserName(name);
+                sqlFiles.add(name);
+                users.add(userName);
+            }
+            catch (Exception e)
+            {
+                logger.warn("Problem with {} - ignoring {}",name,e.getMessage());
+            }
     	}
     	if (m_drop)
     	{
@@ -317,7 +325,7 @@ public class RunDatabaseScripts extends Task {
 					}
 				}
 			} catch (SQLException e) {
-			    e.printStackTrace();
+//			    e.printStackTrace();
 				String s1 = e.getMessage();
 				String s2 = MessageFormat.format("error at line: {0,number,integer} of {1}: {2}\n{3}",new Object[]{m_lineCount,fileName,s1,s});
 				if (!s1.startsWith("ORA-00955"))

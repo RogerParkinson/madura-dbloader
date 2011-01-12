@@ -79,6 +79,18 @@
 		<table width="12cm">
 			<tw>12cm</tw>
 		<tr>
+			<th>1.3</th>
+		</tr>
+		<tr>
+			<td>Tidying the build.</td>
+		</tr>
+		<tr>
+			<th>1.2</th>
+		</tr>
+		<tr>
+			<td>Ignore files where we cannot find a schema name, but continue with other files.</td>
+		</tr>
+		<tr>
 			<th>1.1</th>
 		</tr>
 		<tr>
