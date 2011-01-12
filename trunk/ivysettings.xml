@@ -15,8 +15,9 @@
     under the License.
 -->
 <ivysettings>
-	<property name="ivy.cache.dir" value="${user.home}/ivy_apache/buildarep/cache" />
-	<property name="central.repo" value="http://repo1.maven.org/maven2"/>
+	<property name="ivy.cache.dir" value="${user.home}/ivyroundup" />
+	<property name="roundup-repository" value="http://ivyroundup.googlecode.com/svn/trunk" override="false" />
+
 	<settings   
             defaultResolver="libraries"            
             defaultConflictManager="all" >		<!-- in order to get all revisions without any eviction -->
@@ -24,18 +25,7 @@
     </settings>
     <caches 
     	checkUpToDate="false"
-    	defaultCacheDir="${ivy.cache.dir}/advanced" />
-
-	<!-- you can override this property to use mirrors 
-	  http://mirrors.dotsrc.org/maven2
-	  http://ftp.ggi-project.org/pub/packages/maven2
-	  http://mirrors.sunsite.dk/maven2
-	  http://public.planetmirror.com/pub/maven2
-	  http://ibiblio.lsu.edu/main/pub/packages/maven2
-	  http://www.ibiblio.net/pub/packages/maven2
-	<property name="ibiblio-maven2-root" value="http://repo1.maven.org/maven2/" override="false" />
-	-->
-	<property name="roundup-repository" value="http://ivyroundup.googlecode.com/svn/trunk" override="false" />
+    	defaultCacheDir="${ivy.cache.dir}/cache" />
 
 	<namespaces>
     	<namespace name="maven2">

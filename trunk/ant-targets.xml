@@ -51,13 +51,13 @@
 	<property name="buildproperties" value="${ant.project.name}.properties"/>
 	<property name="results.dir" value="${basedir}/temp/results"/>
 	<property name="javadoc.dir" value="${basedir}/temp/javadoc"/>
-	
+<!--	
 	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
 		  <classpath>
 		  	<fileset dir="${basedir}/temp/buildlib" includes="*.jar" />
 		  </classpath>
 	</taskdef>
-
+-->
 
 	<target name="download-ivy" unless="ivy.already.downloaded">
 		<mkdir dir="${ivy.jar.dir}"/>
@@ -235,6 +235,11 @@
 	</target>
 
 	<target name="compile-distribute-source">
+		<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+			  <classpath>
+			  	<fileset dir="${basedir}/temp/buildlib" includes="*.jar" />
+			  </classpath>
+		</taskdef>
 		<mkdir dir="${basedir}/bin"/>
 		<javac destdir="${basedir}/bin" debug="${javac.compile.debug}" deprecation="${javac.compile.deprecation}" target="${javac.compile.target}" srcdir="${srcpath}">
 			<classpath>

@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml version="1.0" encoding="UTF-8"?>
 <!--
   Copyright 2010 Prometheus Consulting
   
@@ -38,18 +37,11 @@
 									</xs:documentation>
 								</xs:annotation>
 							</xs:element>
-							<xs:element name="image" type="xs:string" minOccurs="0">
+							<xs:element name="Logo" type="xs:string" minOccurs="0">
 								<xs:annotation>
 									<xs:documentation>
-									The image is scaled and placed on the title page.
-									Make sure you specify the height.
-									</xs:documentation>
-								</xs:annotation>
-							</xs:element>
-							<xs:element name="height" type="xs:string" default="200px" minOccurs="0">
-								<xs:annotation>
-									<xs:documentation>
-									The image is scaled with this value and placed on the title page.
+									The image is scaled and placed on the title page. 6cm wide and proportional height.
+									It is placed 4cm below the subtitle. All of this can be redefined by making your own style.xsl
 									</xs:documentation>
 								</xs:annotation>
 							</xs:element>
@@ -315,7 +307,7 @@
 			</xs:extension>
 		</xs:simpleContent>
 	</xs:complexType>
-	<xs:complexType name="listEntryType">
+	<xs:complexType name="listEntryType" mixed="true">
 		<xs:complexContent>
 			<xs:extension base="pType">
 				<xs:choice maxOccurs="unbounded">
