@@ -39,31 +39,21 @@
 		<property file="${buildproperties}"/>
 		<ivyroundup-macro />
 		<ant target="CopyToRemoteRepo"/>
-		<echo message="${ant.project.name} distribute_copy:: complete"/>
-		<echo message="Build Number  ${build.number}"/>		
-		<echo message="Build Date    ${build.date}"/>		
-		<echo message="Build Version ${build.version}"/>
 	</target>
 	
-	<target name="test_copy" description="build and run the unit tests and copy result to local repo">
-		<echo message="${ant.project.name} test_copy start"/>
+	<target name="test_copy" description="build and run the unit tests">
+		<echo message="${ant.project.name} test: start"/>
 		<ant target="retrieve-dependencies"/>
 		<ant target="jar"/>
-		<!--
-		<ant target="compile-test-source"/>
-		<ant target="junit"/>
-		-->
+	</target>
+		
+	<target name="local-repo" depends="test_copy" description="build and copy to the local repo">
 		<ant target="docs"/>
 		<javadoc-macro/>
 		<source-macro/>
-		<property file="${buildproperties}"/>
 		<ivyroundup-macro dist.url="file:${package.dir}"/>
 		<ant target="copyToLocalRepo"/>
-		<property file="${buildproperties}"/>
 		<echo message="${ant.project.name} test_copy:: complete"/>
-		<echo message="Build Number  ${build.number}"/>		
-		<echo message="Build Date    ${build.date}"/>		
-		<echo message="Build Version ${build.version}"/>
 	</target>
 
 

@@ -36,7 +36,7 @@
 	<dependencies>
 		<dependency org="net.bluecow" name="ant-googlecode" rev="0.0.2" conf="build->default"/>
 		<dependency org="net.sourceforge.antcontrib" name="ant-contrib" rev="1.0b3" conf="build->default"/>
-		<dependency org="nz.co.senanque" name="maduradocs" rev="5.0.2" conf="docs->default"/>
+		<dependency org="nz.co.senanque" name="maduradocs" rev="5.0.3" conf="docs->default"/>
 		<dependency org="org.apache.ant" name="ant" rev="1.8.0" conf="compile->default"/>
 		<dependency org="org.apache.commons" name="commons-lang" rev="2.4" conf="default->default"/>
 

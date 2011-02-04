@@ -1,20 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--
-  Copyright 2010 Prometheus Consulting
-  
-  Licensed under the Apache License, Version 2.0 (the "License");
-  you may not use this file except in compliance with the License.
-  You may obtain a copy of the License at
-  
-    http://www.apache.org/licenses/LICENSE-2.0
-  
-  Unless required by applicable law or agreed to in writing, software
-  distributed under the License is distributed on an "AS IS" BASIS,
-  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  See the License for the specific language governing permissions and
-  limitations under the License.
--->
-
 <xsl:stylesheet version="1.1" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fo="http://www.w3.org/1999/XSL/Format" exclude-result-prefixes="fo">
 	<xsl:param name="WatermarkPortrait">none</xsl:param>
 	<xsl:param name="WatermarkLandscape">none</xsl:param>
@@ -296,16 +280,24 @@
 	<xsl:template name="PageFooter">
 		<fo:block xsl:use-attribute-sets="foot" space-before="0.1cm">
 			<fo:block><xsl:text>&#xA9;</xsl:text><xsl:value-of select="$Year"/><xsl:text> </xsl:text><xsl:value-of select="$Company"/></fo:block>
-			<fo:block><xsl:value-of select="/doc/title/MainTitle"/><xsl:text> </xsl:text><xsl:value-of select="$ProductVersion"/><xsl:text> </xsl:text><xsl:value-of select="$Build"/></fo:block>
+			<fo:block><xsl:value-of select="/doc/title/SubTitle"/><xsl:text> </xsl:text><xsl:value-of select="$ProductVersion"/><xsl:text> </xsl:text><xsl:value-of select="$Build"/></fo:block>
 			<fo:block><xsl:text>- </xsl:text><fo:page-number/><xsl:text> -</xsl:text></fo:block>
 		</fo:block>
  	</xsl:template>
 		    
 	<xsl:template name="FirstPage">
-    	<xsl:if test="string-length(@image) &gt; 0">
-	    	<fo:block text-align="right">
+        <fo:block font-size="36pt" text-align="center" space-before="20pt">
+        	<xsl:value-of select="MainTitle"/>
+        </fo:block>
+        <fo:block font-size="28pt" text-align="center" space-before="40pt">
+        	<xsl:value-of select="SubTitle"/>
+        </fo:block>
+    	<xsl:if test="string-length(image) &gt; 0">
+	    	<fo:block text-align="center" space-before="4cm">
          	<fo:external-graphic 
          		xsl:use-attribute-sets="graphic"
+         		height="100%" 
+         		content-width="6cm" 
          		border-style="solid" 
 				border-color="black" 
 				border-width="0.25mm"
@@ -313,27 +305,33 @@
 				scaling-method="resample-any-method"
 				text-align="center" >
          	<xsl:attribute name="src">
-         		<xsl:text>url(src/</xsl:text>
+         		<xsl:text>url(</xsl:text>
          		<xsl:value-of select="image"/>
          		<xsl:text>)</xsl:text>
-         	</xsl:attribute>
-         	<xsl:attribute name="height">
-         		<xsl:value-of select="height"/>
          	</xsl:attribute>
          	</fo:external-graphic>
          	</fo:block>
         	</xsl:if>
-        <fo:block font-size="28pt" text-align="center" space-before="40pt">
-        	<xsl:value-of select="SubTitle"/>
-        </fo:block>
-    	<xsl:if test="string-length($ProductVersion) &gt; 0">
-	        <fo:block font-size="28pt" text-align="center" space-before="10pt">
-	        	<xsl:value-of select="$ProductVersion"/>
-	        </fo:block>
-        </xsl:if>
-        <fo:block font-size="36pt" text-align="center" space-before="20pt">
-        	<xsl:value-of select="MainTitle"/>
-        </fo:block>
+    	<xsl:if test="string-length(Logo) &gt; 0">
+	    	<fo:block text-align="center" space-before="4cm">
+         	<fo:external-graphic 
+         		xsl:use-attribute-sets="graphic"
+         		height="100%" 
+         		content-width="6cm" 
+         		border-style="solid" 
+				border-color="black" 
+				border-width="0.25mm"
+				scaling="uniform" 
+				scaling-method="resample-any-method"
+				text-align="center" >
+         	<xsl:attribute name="src">
+         		<xsl:text>url(</xsl:text>
+         		<xsl:value-of select="Logo"/>
+         		<xsl:text>)</xsl:text>
+         	</xsl:attribute>
+         	</fo:external-graphic>
+         	</fo:block>
+        	</xsl:if>
 		<fo:block break-before='page'/>
            <!--<fo:block xsl:use-attribute-sets="H2" space-before="1cm">
             <xsl:value-of select="Revision"/>
