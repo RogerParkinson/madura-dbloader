@@ -5,7 +5,7 @@
 		<MainTitle>Madura DB Load</MainTitle>
 		<SubTitle>User Guide</SubTitle>
 		<Author>Roger Parkinson</Author>
-		<Revision>$Revision: 4 $</Revision>
+		<Revision>$Revision$</Revision>
 		<image>logo.jpg</image>
 		<xi:include href="MaduraDBLoader.log"/>
 		<references>
