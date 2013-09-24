@@ -79,11 +79,17 @@
 		<table width="12cm">
 			<tw>12cm</tw>
 		<tr>
-			<th>1.4</th>
+			<th>1.5</th>
 		</tr>
 		<tr>
-			<td>Build for java 1.7.</td>
+			<td>Added pom file.</td>
 		</tr>
+        <tr>
+            <th>1.4</th>
+        </tr>
+        <tr>
+            <td>Build for java 1.7.</td>
+        </tr>
         <tr>
             <th>1.3</th>
         </tr>
