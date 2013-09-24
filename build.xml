@@ -23,10 +23,6 @@
 	<property name="junit.class" value="nz.co.senanque.dbloader.RunDatabaseScriptsTest"/>
 	<basename property="jar.filename" file="${basedir}"/>
 
-    <path id="libs">
-    	<fileset dir="${basedir}/temp/lib"/>
-    </path>
-
 	<import file="ant-targets.xml"/>
 	
 	<target name="distribute_copy" description="build the distribution and copy to the target repo">
