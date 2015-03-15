@@ -1,0 +1,5 @@
+The problem we solve here is that we have multiple schemas in our database and there is a frequent release of new sql scripts that update them. The scripts are distributed with names that sort to the order they need to run in, and we must preserve that order, and they also have the schema name encoded into the name so we know which schema to apply them to.
+
+This ant task replaces a sh script that never quite handled the job. It is only tested on Oracle, though it ought to be fairly portable. It scans the scripts presented for all schema names and drops (optionally) those schemas and recreated them. Then it runs the sql.
+
+Stored procedures and triggers (for Oracle, at least) are tested, as well as the more common DDL and insert/update statements. Select statements work too, and they log the resulting rows.
